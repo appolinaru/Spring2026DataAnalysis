@@ -1,23 +1,30 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "arch-rag"
 version = "0.1.0"
 description = "RAG-поиск по архитектурным нормативам"
-requires-python = ">=3.9"
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12"
+
 dependencies = [
-    "loguru>=0.7.0",
     "numpy>=1.24.0",
+    "loguru>=0.7.0",
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=3.5.0",
+    "pytest>=8.0.0",
+]
 
-[tool.black]
-line-length = 88
-target-version = ['py39']
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+priority = "primary"
