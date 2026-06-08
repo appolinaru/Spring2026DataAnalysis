@@ -1,3 +1,4 @@
+
 # Интеграция генеративного ИИ в процесс архитектурного концепт-дизайна
 
 ## Описание проекта
@@ -21,14 +22,58 @@
 3. Разработка и тестирование подхода к формированию архитектурных концептов с использованием RAG
 4. Оценка эффективности предложенного подхода по заданным метрикам
 
-## Технологии и инструменты
+# arch_rag
 
-- **Язык программирования:** Python
-- **Генеративные модели:** Qwen (Image 2512, Image Edit 2511), Kandinsky
-- **RAG-фреймворк:** LangChain / LlamaIndex (в разработке)
-- **Векторная БД:** ChromaDB / FAISS (в разработке)
-- **Обработка документов:** Docling / PyPDF
-- **Интерфейс:** (в разработке — Streamlit/Gradio)
+Библиотека RAG-поиска по архитектурным нормативам (СНиП, СП, ГОСТ) для архитектурного концепт-дизайна.
 
-## Автор
+## Описание
 
+`arch_rag` — модульная Python-библиотека для поиска и применения строительных нормативов в процессе генерации архитектурных концептов. Реализует два метода поиска: keyword matching и векторный поиск (TF-IDF + cosine similarity).
+
+## Установка зависимостей
+
+```
+```bash
+pip install -r requirements.txt
+```
+
+# Использованин
+
+## Поиск по нормативам
+
+```
+from arch_rag import NormsSearcher
+
+searcher = NormsSearcher()
+results = searcher.search("двухэтажный монолитный дом", top_k=3)
+
+for r in results:
+    print(f"[{r['type']} {r['number']}] {r['text']}")
+```
+## Векторный поиск
+
+```
+from arch_rag import VectorSearcher
+
+vsearcher = VectorSearcher()
+results = vsearcher.search("высота потолков в жилом доме", top_k=2)
+
+for r in results:
+    print(f"[{r['type']}] {r['text']} (score: {r['vector_score']})")
+```
+## Сборка архитектурной концепции
+
+```
+from arch_rag import ConceptBuilder
+
+builder = ConceptBuilder()
+concept = builder.build("Двухэтажный монолитный жилой дом, 150 м²")
+
+print(concept["text"])   # Текстовая концепция
+print(concept["norms"])  # Применённые нормативы
+print(concept["params"]) # Извлечённые параметры
+```
+
+# Автор
+
+Проект разработан в рамках ВКР по теме «Интеграция генеративного ИИ в процесс архитектурного концепт-дизайна».
