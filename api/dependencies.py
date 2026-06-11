@@ -1,19 +1,12 @@
 """Функции-провайдеры зависимостей для FastAPI Depends."""
 
-from fastapi import HTTPException, Request
+from fastapi import Request
 from schemas.app_config import AppConfigModel
 from services.runtime_config_service import RuntimeConfigService
 
 
 def get_dependencies(request: Request) -> dict:
     """Получить контейнер зависимостей из состояния приложения."""
-    if (
-        not hasattr(request.app.state, "dependencies")
-        or request.app.state.dependencies is None
-    ):
-        raise HTTPException(
-            status_code=500, detail="Контейнер зависимостей не инициализирован."
-        )
     return request.app.state.dependencies
 
 
