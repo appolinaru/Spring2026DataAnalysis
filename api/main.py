@@ -5,6 +5,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from loguru import logger
+
 from init_dependencies import init_dependencies
 from routes import config, health
 
@@ -14,21 +16,19 @@ async def lifespan(app: FastAPI):
     """Lifespan: инициализация зависимостей при старте."""
     deps = init_dependencies()
     app.state.dependencies = deps
-    print(f"Dependencies initialized: {list(deps.keys())}")
-
+    logger.info(f"Dependencies initialized: {list(deps.keys())}")
+    
     yield
-
+    
     app.state.dependencies = None
-    print("App is shutted down")
+    logger.info("App is shutting down")
 
 
 app = FastAPI(
     lifespan=lifespan,
     title=os.environ.get("APP_NAME", "arch-rag-api"),
-    description=os.environ.get(
-        "APP_DESCRIPTION", "API для RAG-поиска по архитектурным нормативам"
-    ),
-    version=os.environ.get("APP_VERSION", "1.0.0"),
+    description=os.environ.get("APP_DESCRIPTION", "API для RAG-поиска по архитектурным нормативам"),
+    version=os.environ.get("APP_VERSION", "1.0.0")
 )
 
 
@@ -48,5 +48,4 @@ app.include_router(config.router)
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

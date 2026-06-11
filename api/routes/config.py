@@ -6,10 +6,10 @@ from schemas.app_config import AppConfigModel
 from schemas.runtime_config import RuntimeConfigModel, RuntimeConfigUpdateModel
 from services.runtime_config_service import RuntimeConfigService
 
-router = APIRouter(tags=["configuration"])
+router = APIRouter(prefix="/config", tags=["configuration"])
 
 
-@router.get("/config/app", response_model=AppConfigModel)
+@router.get("/app", response_model=AppConfigModel)
 def get_app_config_endpoint(
     config: AppConfigModel = Depends(get_app_config),
 ) -> AppConfigModel:
@@ -17,7 +17,7 @@ def get_app_config_endpoint(
     return config
 
 
-@router.get("/config/runtime", response_model=RuntimeConfigModel)
+@router.get("/runtime", response_model=RuntimeConfigModel)
 def get_runtime_config(
     service: RuntimeConfigService = Depends(get_runtime_service),
 ) -> RuntimeConfigModel:
@@ -25,7 +25,7 @@ def get_runtime_config(
     return service.get_config()
 
 
-@router.put("/config/runtime", response_model=RuntimeConfigModel)
+@router.put("/runtime", response_model=RuntimeConfigModel)
 def update_runtime_config(
     new_settings: RuntimeConfigUpdateModel,
     service: RuntimeConfigService = Depends(get_runtime_service),
