@@ -1,19 +1,15 @@
-version: '3.8'
-
 services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
-    container_name: elasticsearch_local
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: urban_db
     environment:
-      # Отключаем безопасность для локальной разработки (без паролей и HTTPS)
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-      # Ограничиваем потребление оперативной памяти
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      POSTGRES_DB: urban_data
+      POSTGRES_USER: urban_user
+      POSTGRES_PASSWORD: urban_password
     ports:
-      - "9200:9200"
+      - "5432:5432"
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - urban_pg_data:/var/lib/postgresql/data
 
 volumes:
-  es_data:
+  urban_pg_data:
