@@ -1,29 +1,34 @@
 """Эндпоинты конфигурации."""
 
-from config import AppConfig
-from fastapi import APIRouter
-from services.runtime_config import RuntimeConfigService, RuntimeSettings
+from dependencies import get_app_config, get_runtime_service
+from fastapi import APIRouter, Depends
+from schemas.app_config import AppConfigModel
+from schemas.runtime_config import RuntimeConfigModel, RuntimeConfigUpdateModel
+from services.runtime_config_service import RuntimeConfigService
 
-router = APIRouter()
+router = APIRouter(prefix="/config", tags=["configuration"])
 
 
-@router.get("/config/app")
-def get_app_config():
+@router.get("/app", response_model=AppConfigModel)
+def get_app_config_endpoint(
+    config: AppConfigModel = Depends(get_app_config),
+) -> AppConfigModel:
     """Статическая конфигурация приложения."""
-    config = AppConfig()
-    return config.to_dict()
+    return config
 
 
-@router.get("/config/runtime")
-def get_runtime_config():
+@router.get("/runtime", response_model=RuntimeConfigModel)
+def get_runtime_config(
+    service: RuntimeConfigService = Depends(get_runtime_service),
+) -> RuntimeConfigModel:
     """Текущие runtime-настройки."""
-    service = RuntimeConfigService()
-    return service.get().model_dump()
+    return service.get_config()
 
 
-@router.put("/config/runtime")
-def update_runtime_config(settings: RuntimeSettings):
+@router.put("/runtime", response_model=RuntimeConfigModel)
+def update_runtime_config(
+    new_settings: RuntimeConfigUpdateModel,
+    service: RuntimeConfigService = Depends(get_runtime_service),
+) -> RuntimeConfigModel:
     """Обновление runtime-настроек."""
-    service = RuntimeConfigService()
-    updated = service.update(settings)
-    return updated.model_dump()
+    return service.update_config(new_settings)
